@@ -23,6 +23,7 @@ export interface DailyAttendanceRecord {
 export interface AdminDailyAttendanceRecord {
   userId: number;
   userName: string;
+  userAvatar: string | null;
   date: string;
   sessions: WorkSessionItem[];
   totalDuration: number;
@@ -477,6 +478,7 @@ export class AttendancesService {
         userDailyRecords.set(dateKey, {
           userId,
           userName: session.user.name,
+          userAvatar: session.user.avatar || null,
           date: dateKey,
           sessions: [],
           totalDuration: 0,

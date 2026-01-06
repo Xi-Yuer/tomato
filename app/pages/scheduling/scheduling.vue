@@ -83,9 +83,22 @@
               class="record-item"
               :data-date="group.date"
             >
-              <!-- 管理员视图显示员工姓名 -->
-              <view v-if="isAdmin" class="employee-name">
-                {{ record.userName }}
+              <!-- 管理员视图显示员工信息 -->
+              <view v-if="isAdmin" class="employee-info">
+                <image
+                  v-if="record.userAvatar"
+                  :src="record.userAvatar"
+                  mode="aspectFill"
+                  class="employee-avatar"
+                ></image>
+                <uni-icons
+                  v-else
+                  type="person-filled"
+                  size="32"
+                  color="#8c8c8c"
+                  class="employee-avatar-icon"
+                ></uni-icons>
+                <text class="employee-name">{{ record.userName }}</text>
               </view>
               <!-- 班次列表 -->
               <view class="sessions-list">
@@ -146,7 +159,22 @@
               :key="employee.userId"
               class="employee-stat-item"
             >
-              <text class="employee-name-text">{{ employee.userName }}</text>
+              <view class="employee-info-row">
+                <image
+                  v-if="employee.userAvatar"
+                  :src="employee.userAvatar"
+                  mode="aspectFill"
+                  class="employee-avatar-small"
+                ></image>
+                <uni-icons
+                  v-else
+                  type="person-filled"
+                  size="24"
+                  color="#8c8c8c"
+                  class="employee-avatar-icon-small"
+                ></uni-icons>
+                <text class="employee-name-text">{{ employee.userName }}</text>
+              </view>
               <text class="employee-duration-text">{{
                 formatDuration(employee.totalMinutes)
               }}</text>
@@ -265,11 +293,13 @@ const employeeStats = computed(() => {
   attendanceRecords.value.forEach((record) => {
     const userId = record.userId;
     const userName = record.userName;
+    const userAvatar = record.userAvatar;
 
     if (!statsMap.has(userId)) {
       statsMap.set(userId, {
         userId,
         userName,
+        userAvatar,
         totalMinutes: 0,
       });
     }
@@ -476,7 +506,6 @@ onMounted(async () => {
 }
 
 .employee-stats-section {
-  background-color: #ffffff50;
   margin-top: 16rpx;
   border-radius: 12rpx;
   overflow: hidden;
@@ -496,6 +525,24 @@ onMounted(async () => {
   padding: 20rpx 24rpx;
   background-color: #ffffff;
   border-radius: 8rpx;
+}
+
+.employee-info-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex: 1;
+}
+
+.employee-avatar-small {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.employee-avatar-icon-small {
+  flex-shrink: 0;
 }
 
 .employee-name-text {
@@ -605,6 +652,7 @@ onMounted(async () => {
 .details-section {
   margin-top: 16rpx;
   border-radius: 12rpx;
+  overflow: hidden;
 }
 
 .records-list {
@@ -619,11 +667,28 @@ onMounted(async () => {
   border-bottom: none;
 }
 
+.employee-info {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 12rpx;
+}
+
+.employee-avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.employee-avatar-icon {
+  flex-shrink: 0;
+}
+
 .employee-name {
   font-size: 28rpx;
   font-weight: 600;
   color: #1a1a1a;
-  margin-bottom: 12rpx;
 }
 
 .sessions-list {

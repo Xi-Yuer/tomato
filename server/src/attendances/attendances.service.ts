@@ -375,7 +375,12 @@ export class AttendancesService {
     const dailyRecords = new Map<string, DailyAttendanceRecord>();
 
     for (const session of workSessions) {
-      const dateKey = session.workDate.toISOString().split('T')[0];
+      // 确保 workDate 是 Date 对象
+      const workDate =
+        session.workDate instanceof Date
+          ? session.workDate
+          : new Date(session.workDate);
+      const dateKey = workDate.toISOString().split('T')[0];
 
       if (!dailyRecords.has(dateKey)) {
         dailyRecords.set(dateKey, {
@@ -452,7 +457,12 @@ export class AttendancesService {
 
     for (const session of workSessions) {
       const userId = session.userId;
-      const dateKey = session.workDate.toISOString().split('T')[0];
+      // 确保 workDate 是 Date 对象
+      const workDate =
+        session.workDate instanceof Date
+          ? session.workDate
+          : new Date(session.workDate);
+      const dateKey = workDate.toISOString().split('T')[0];
 
       if (!userRecords.has(userId)) {
         userRecords.set(userId, new Map());

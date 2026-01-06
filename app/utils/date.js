@@ -189,3 +189,69 @@ export function formatDistance(meters, options = {}) {
 
   return `${(meters / 1000).toFixed(kmFixed)}${kmUnit}`;
 }
+
+/**
+ * 格式化工作时长（分钟转小时）
+ * @param {number} minutes - 分钟数
+ * @returns {string} 格式化后的时长字符串，如 "8小时" 或 "8.5小时"
+ */
+export function formatDuration(minutes) {
+  if (minutes == null || isNaN(minutes) || minutes < 0) return "0小时";
+  
+  const hours = minutes / 60;
+  // 如果是整数小时，不显示小数
+  if (hours % 1 === 0) {
+    return `${hours}小时`;
+  }
+  // 否则保留一位小数
+  return `${hours.toFixed(1)}小时`;
+}
+
+/**
+ * 生成日历数组（包含上月末尾和下月开头）
+ * @param {number} year - 年份
+ * @param {number} month - 月份（1-12）
+ * @returns {Array} 日历数组，每个元素包含 { date: string, day: number, isCurrentMonth: boolean }
+ */
+export function getCalendarDays(year, month) {
+  const firstDay = new Date(year, month - 1, 1);
+  const lastDay = new Date(year, month, 0);
+  const firstDayWeek = firstDay.getDay(); // 0-6，0是周日
+  const daysInMonth = lastDay.getDate();
+  
+  const calendarDays = [];
+  
+  // 添加上月末尾的日期
+  const prevMonthLastDay = new Date(year, month - 1, 0).getDate();
+  for (let i = firstDayWeek - 1; i >= 0; i--) {
+    const day = prevMonthLastDay - i;
+    const date = new Date(year, month - 2, day);
+    calendarDays.push({
+      date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+      day: day,
+      isCurrentMonth: false,
+    });
+  }
+  
+  // 添加当月的日期
+  for (let day = 1; day <= daysInMonth; day++) {
+    calendarDays.push({
+      date: `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+      day: day,
+      isCurrentMonth: true,
+    });
+  }
+  
+  // 添加下月开头的日期，补齐到42天（6周）
+  const remainingDays = 42 - calendarDays.length;
+  for (let day = 1; day <= remainingDays; day++) {
+    const date = new Date(year, month, day);
+    calendarDays.push({
+      date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+      day: day,
+      isCurrentMonth: false,
+    });
+  }
+  
+  return calendarDays;
+}

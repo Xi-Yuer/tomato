@@ -184,7 +184,7 @@ export function formatDistance(meters, options = {}) {
     kmFixed = 1, // km 保留小数位
   } = options;
   if (meters < kmThreshold) {
-    return `${Math.round(meters)}${meterUnit}`;
+    return `${Math.round(meters)} ${meterUnit}`;
   }
 
   return `${(meters / 1000).toFixed(kmFixed)}${kmUnit}`;

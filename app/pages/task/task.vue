@@ -285,7 +285,7 @@ onShow(() => {
 .tab-section {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 10;
   padding: 5px 0;
 }
 

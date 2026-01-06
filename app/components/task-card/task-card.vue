@@ -171,7 +171,6 @@ const handleTakePhoto = () => {
   background-color: #ffffff;
   border-radius: 8px;
   padding: 16px;
-  border: 1px solid #e8e8e8;
   position: relative;
 
   &.card-pending {

@@ -4,7 +4,17 @@
       <!-- 内容区域 -->
       <view class="card-content">
         <!-- 标题 -->
-        <text class="card-title">{{ clockTitle }}</text>
+        <view class="card-title">
+          {{ clockTitle }}
+          <view class="refresh-button" @click="handleRefresh">
+            <uni-icons
+              type="reload"
+              size="14"
+              class="reload-icon"
+              color="#8c8c8c"
+            ></uni-icons>
+          </view>
+        </view>
 
         <!-- 时间范围 -->
         <text class="time-range">
@@ -46,7 +56,7 @@ const props = defineProps({
   // 位置信息
   locationText: {
     type: String,
-    default: "距离店中心 15m(范围内)",
+    default: "距离店中心 0 m",
   },
 });
 
@@ -54,6 +64,7 @@ const emit = defineEmits(["clock-success", "clock-error"]);
 const isClockDisabled = ref(false);
 const clockStatusData = ref(null); // 打卡状态数据
 const isLoading = ref(true);
+const isRefreshing = ref(false); // 是否正在刷新
 const currentLocation = ref(null); // 当前位置信息
 
 // 计算属性：打卡标题
@@ -70,9 +81,9 @@ const displayLocationText = computed(() => {
     const distance = clockStatusData.value.distance;
     const isInRange = clockStatusData.value.isInRange;
     if (isInRange) {
-      return `距离店中心 ${formatDistance(distance)}(范围内)`;
+      return `距离店中心 ${formatDistance(distance)}`;
     } else {
-      return `距离店中心 ${formatDistance(distance)}(范围外)`;
+      return `距离店中心 ${formatDistance(distance)}`;
     }
   }
   return props.locationText;
@@ -262,6 +273,40 @@ const handleClock = async () => {
   }
 };
 
+// 刷新位置和距离
+const handleRefresh = async () => {
+  if (isRefreshing.value || isLoading.value) {
+    return;
+  }
+
+  isRefreshing.value = true;
+
+  try {
+    // 重新获取位置
+    await getCurrentLocation();
+
+    // 重新获取打卡状态（包含距离信息）
+    const status = await attendanceApi.getClockStatus(
+      currentLocation.value?.latitude,
+      currentLocation.value?.longitude
+    );
+    clockStatusData.value = status;
+    uni.showToast({
+      title: "刷新成功",
+      icon: "none",
+      duration: 2000,
+    });
+  } catch (error) {
+    uni.showToast({
+      title: "刷新失败，请重试",
+      icon: "none",
+      duration: 2000,
+    });
+  } finally {
+    isRefreshing.value = false;
+  }
+};
+
 onMounted(() => {
   checkClockStatus();
 });
@@ -301,12 +346,14 @@ onMounted(() => {
 }
 
 .card-title {
+  position: relative;
+  width: fit-content;
+  position: relative;
   font-size: 18px;
   font-weight: 600;
   color: #1a1a1a;
   margin-bottom: 8px;
 }
-
 .time-range {
   font-size: 24px;
   font-weight: 700;
@@ -319,16 +366,28 @@ onMounted(() => {
   display: flex;
   align-items: center;
   margin-top: 4px;
+  position: relative;
 }
 
 .location-icon {
   margin-right: 4px;
+  transform-origin: center center;
 }
 
 .location-text {
   font-size: 12px;
   color: #8c8c8c;
   line-height: 1.4;
+  flex: 1;
+}
+
+.refresh-button {
+  position: absolute;
+  right: -25rpx;
+  top: -20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .clock-button-wrapper {
@@ -347,12 +406,10 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
   transition: all 0.3s ease;
 
   &:active {
     transform: scale(0.95);
-    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
   }
 
   &.disabled {

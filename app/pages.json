@@ -1,0 +1,110 @@
+{
+  "pages": [
+    {
+      "path": "pages/task/task",
+      "style": {
+        "navigationBarTitleText": "任务"
+      }
+    },
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/scheduling/scheduling",
+      "style": {
+        "navigationBarTitleText": "排班"
+      }
+    },
+    {
+      "path": "pages/dashboard/dashboard",
+      "style": {
+        "navigationBarTitleText": "报表"
+      }
+    },
+    {
+      "path": "pages/profile/profile",
+      "style": {
+        "navigationBarTitleText": "我的"
+      }
+    },
+    {
+      "path": "pages/profile/edit",
+      "style": {
+        "navigationBarTitleText": "编辑资料"
+      }
+    },
+    {
+      "path": "pages/task/management",
+      "style": {
+        "navigationBarTitleText": "任务管理"
+      }
+    },
+    {
+      "path": "pages/task/module-edit",
+      "style": {
+        "navigationBarTitleText": "任务模块"
+      }
+    },
+    {
+      "path": "pages/task/task-edit",
+      "style": {
+        "navigationBarTitleText": "任务"
+      }
+    },
+    {
+      "path": "pages/task/execution-detail",
+      "style": {
+        "navigationBarTitleText": "任务详情"
+      }
+    },
+    {
+      "path": "pages/task/execution-submit",
+      "style": {
+        "navigationBarTitleText": "提交任务"
+      }
+    }
+  ],
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pages/task/task",
+        "text": "任务",
+        "iconPath": "static/tabBar/renwu.png",
+        "selectedIconPath": "static/tabBar/renwu-s.png"
+      },
+      {
+        "pagePath": "pages/scheduling/scheduling",
+        "text": "排班",
+        "iconPath": "static/tabBar/leftfont-32.png",
+        "selectedIconPath": "static/tabBar/leftfont-32-s.png"
+      },
+      {
+        "pagePath": "pages/dashboard/dashboard",
+        "text": "报表",
+        "iconPath": "static/tabBar/shujukanban.png",
+        "selectedIconPath": "static/tabBar/shujukanban-s.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "static/tabBar/wode.png",
+        "selectedIconPath": "static/tabBar/wode-s.png"
+      }
+    ],
+    "color": "#999",
+    "selectedColor": "#4377da"
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "溜冰土豆",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#e8f0fe", 
+    "app-plus": {
+      "background": "#efeff4"
+    }
+  }
+}

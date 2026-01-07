@@ -42,7 +42,7 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter(), new HttpExceptionFilter());
 
   await app.listen(port);
-  logger.log(`🚀 服务器已启动，监听端口: ${port}`);
+  logger.log(`🚀 服务器已启动，监听端口: http://localhost:${port}`);
   logger.log(`📝 环境: ${process.env.NODE_ENV || 'development'}`);
   logger.log(`⏰ 时区: ${process.env.TZ || 'Asia/Shanghai'}`);
 }

@@ -61,5 +61,6 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: 输出镜像摘要
-        run: echo "镜像已构建并推送: ${{ steps.meta.outputs.tags }}"
+        run: |
+          echo "镜像已构建并推送: ${{ steps.meta.outputs.tags }}"
 

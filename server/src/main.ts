@@ -46,12 +46,8 @@ async function bootstrap() {
   logger.log(`📝 环境: ${process.env.NODE_ENV || 'development'}`);
   logger.log(`⏰ 时区: ${process.env.TZ || 'Asia/Shanghai'}`);
 }
-bootstrap()
-  .then(() => {
-    // 启动成功日志已在 bootstrap 中输出
-  })
-  .catch((error) => {
-    const logger = new Logger('Bootstrap');
-    logger.error('❌ 服务器启动失败:', error);
-    process.exit(1);
-  });
+bootstrap().catch((error) => {
+  const logger = new Logger('Bootstrap');
+  logger.error('❌ 服务器启动失败:', error);
+  process.exit(1);
+});

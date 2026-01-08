@@ -100,11 +100,16 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { onShow } from "@dcloudio/uni-app";
+import { onShow, onTabItemTap } from "@dcloudio/uni-app";
 import { storage } from "../../utils/storage.js";
 import { userApi } from "../../utils/api.js";
 
 const userInfo = ref(null);
+
+// 双击刷新相关
+const lastTabTapTime = ref(0);
+const lastTabIndex = ref(-1);
+const DOUBLE_TAP_DELAY = 500; // 双击间隔时间（毫秒）
 
 // 获取用户信息
 const getUserInfo = async () => {
@@ -200,6 +205,30 @@ onMounted(() => {
 // 页面显示时刷新用户信息（从编辑页面返回时）
 onShow(() => {
   getUserInfo();
+});
+
+// 监听tabBar点击事件，实现双击刷新
+onTabItemTap((e) => {
+  const currentTime = Date.now();
+  const currentTabIndex = e.index;
+  
+  // 判断是否为双击（同一tab，间隔小于500ms）
+  if (
+    lastTabIndex.value === currentTabIndex &&
+    currentTime - lastTabTapTime.value < DOUBLE_TAP_DELAY
+  ) {
+    // 双击刷新
+    uni.showToast({
+      title: "刷新中...",
+      icon: "loading",
+      duration: 1000,
+    });
+    getUserInfo();
+  }
+  
+  // 更新记录
+  lastTabTapTime.value = currentTime;
+  lastTabIndex.value = currentTabIndex;
 });
 </script>
 

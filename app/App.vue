@@ -40,7 +40,6 @@ page {
   padding-top: 0;
   box-sizing: border-box;
   padding-bottom: 60rpx;
-  background: #f5f0ff;
 }
 
 page::before {
@@ -52,7 +51,6 @@ page::before {
   bottom: 0;
   min-height: 100%;
   background: linear-gradient(to bottom, #e8f0fe 0%, #f5f0ff 50%, #f1eeff 100%);
-  // background: #f7f7f7;
   background-repeat: no-repeat;
   background-size: 100% 100%;
   z-index: -1;

@@ -53,6 +53,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import { onTabItemTap } from "@dcloudio/uni-app";
 import { attendanceApi, userApi } from "@/utils/api";
 import { storage } from "@/utils/storage";
 import { formatDuration } from "@/utils/date";
@@ -71,6 +72,11 @@ const isLoading = ref(false);
 const selectedDate = ref(null);
 const todayRecords = ref([]); // 今天的工作明细
 const selectedDateRecords = ref([]); // 选中日期的工作明细
+
+// 双击刷新相关
+const lastTabTapTime = ref(0);
+const lastTabIndex = ref(-1);
+const DOUBLE_TAP_DELAY = 500; // 双击间隔时间（毫秒）
 
 // 计算属性：选中的年月字符串（用于picker）
 const selectedYearMonth = computed(() => {
@@ -272,10 +278,39 @@ const loadTodayRecords = async () => {
   }
 };
 
-onMounted(async () => {
+// 刷新页面数据
+const refreshData = async () => {
   await getUserInfo();
   await loadAttendanceRecords();
   await loadTodayRecords();
+};
+
+onMounted(async () => {
+  await refreshData();
+});
+
+// 监听tabBar点击事件，实现双击刷新
+onTabItemTap((e) => {
+  const currentTime = Date.now();
+  const currentTabIndex = e.index;
+  
+  // 判断是否为双击（同一tab，间隔小于500ms）
+  if (
+    lastTabIndex.value === currentTabIndex &&
+    currentTime - lastTabTapTime.value < DOUBLE_TAP_DELAY
+  ) {
+    // 双击刷新
+    uni.showToast({
+      title: "刷新中...",
+      icon: "loading",
+      duration: 1000,
+    });
+    refreshData();
+  }
+  
+  // 更新记录
+  lastTabTapTime.value = currentTime;
+  lastTabIndex.value = currentTabIndex;
 });
 </script>
 

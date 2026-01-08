@@ -63,6 +63,20 @@
         </uni-list-item>
 
         <uni-list-item
+          v-if="userInfo?.isAdmin"
+          title="添加用户"
+          :clickable="true"
+          :show-arrow="true"
+          @click="handleAddUser"
+        >
+          <template v-slot:header>
+            <view class="list-item-icon">
+              <uni-icons type="person" size="20" color="#000000"></uni-icons>
+            </view>
+          </template>
+        </uni-list-item>
+
+        <uni-list-item
           title="关于"
           :clickable="true"
           :show-arrow="true"
@@ -132,6 +146,13 @@ const handleEditProfile = () => {
 const handleTaskManagement = () => {
   uni.navigateTo({
     url: "/pages/task/management",
+  });
+};
+
+// 添加用户
+const handleAddUser = () => {
+  uni.navigateTo({
+    url: "/pages/profile/add-user",
   });
 };
 

@@ -38,6 +38,12 @@
       }
     },
     {
+      "path": "pages/profile/add-user",
+      "style": {
+        "navigationBarTitleText": "添加用户"
+      }
+    },
+    {
       "path": "pages/task/management",
       "style": {
         "navigationBarTitleText": "任务管理"

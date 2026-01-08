@@ -248,6 +248,11 @@ export const userApi = {
     return api.patch("/users/profile/me", data);
   },
 
+  // 创建用户（管理员功能）
+  createUser(data) {
+    return api.post("/users", data);
+  },
+
   // 上传用户头像
   uploadAvatar(filePath) {
     return new Promise((resolve, reject) => {

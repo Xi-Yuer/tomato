@@ -87,7 +87,7 @@ const handleTakePhoto = (task) => {
   align-items: center;
   margin-right: 16px;
   position: relative;
-  width: 24px;
+  width: 10px;
   flex-shrink: 0;
 }
 

@@ -24,7 +24,7 @@ import { WorkSession } from './entities/work-session.entity';
       port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
       username: process.env.DB_USERNAME || 'root',
       password: process.env.DB_PASSWORD || '2214380963Wx!!',
-      database: process.env.DB_DATABASE || 'tomato_manager',
+      database: process.env.DB_DATABASE || 'potato',
       entities: [
         User,
         Task,

@@ -69,68 +69,72 @@
     <!-- 详细记录列表 -->
     <view class="details-section">
       <uni-collapse>
-        <uni-collapse-item
+        <view
           v-for="(group, index) in groupedRecords"
           :key="index"
-          :title="formatGroupDate(group.date)"
+          class="date-group"
           :data-date="group.date"
-          :border="false"
         >
-          <view class="records-list">
-            <view
-              v-for="(record, recordIndex) in group.records"
-              :key="recordIndex"
-              class="record-item"
-              :data-date="group.date"
-            >
-              <!-- 管理员视图显示员工信息 -->
-              <view v-if="isAdmin" class="employee-info">
-                <image
-                  v-if="record.userAvatar"
-                  :src="record.userAvatar"
-                  mode="aspectFill"
-                  class="employee-avatar"
-                ></image>
-                <uni-icons
-                  v-else
-                  type="person-filled"
-                  size="32"
-                  color="#8c8c8c"
-                  class="employee-avatar-icon"
-                ></uni-icons>
-                <text class="employee-name">{{ record.userName }}</text>
-              </view>
-              <!-- 班次列表 -->
-              <view class="sessions-list">
-                <view
-                  v-for="(session, sessionIndex) in record.sessions"
-                  :key="sessionIndex"
-                  class="session-item"
-                >
-                  <view class="session-time">
-                    <text class="time-text">{{
-                      formatTimeOnly(session.startTime)
-                    }}</text>
-                    <text class="time-separator">-</text>
-                    <text class="time-text">{{
-                      formatTimeOnly(session.endTime)
+          <uni-collapse-item
+            :title="formatGroupDate(group.date)"
+            :border="false"
+          >
+            <view class="records-list">
+              <view
+                v-for="(record, recordIndex) in group.records"
+                :key="recordIndex"
+                class="record-item"
+                :data-date="group.date"
+              >
+                <!-- 管理员视图显示员工信息 -->
+                <view v-if="isAdmin" class="employee-info">
+                  <image
+                    v-if="record.userAvatar"
+                    :src="record.userAvatar"
+                    mode="aspectFill"
+                    class="employee-avatar"
+                  ></image>
+                  <uni-icons
+                    v-else
+                    type="person-filled"
+                    size="32"
+                    color="#8c8c8c"
+                    class="employee-avatar-icon"
+                  ></uni-icons>
+                  <text class="employee-name">{{ record.userName }}</text>
+                </view>
+                <!-- 班次列表 -->
+                <view class="sessions-list">
+                  <view
+                    v-for="(session, sessionIndex) in record.sessions"
+                    :key="sessionIndex"
+                    class="session-item"
+                  >
+                    <view class="session-time">
+                      <text class="time-text">{{
+                        formatTimeOnly(session.startTime)
+                      }}</text>
+                      <text class="time-separator">-</text>
+                      <text class="time-text">{{
+                        formatTimeOnly(session.endTime)
+                      }}</text>
+                    </view>
+                    <text class="session-duration">{{
+                      formatDuration(session.duration)
                     }}</text>
                   </view>
-                  <text class="session-duration">{{
-                    formatDuration(session.duration)
+                </view>
+                <!-- 当日总时长 -->
+                <view class="daily-total">
+                  <text class="total-label">当日总计：</text>
+                  <text class="total-value">{{
+                    formatDuration(record.totalDuration)
                   }}</text>
                 </view>
               </view>
-              <!-- 当日总时长 -->
-              <view class="daily-total">
-                <text class="total-label">当日总计：</text>
-                <text class="total-value">{{
-                  formatDuration(record.totalDuration)
-                }}</text>
-              </view>
             </view>
-          </view>
-        </uni-collapse-item>
+          </uni-collapse-item>
+        </view>
       </uni-collapse>
 
       <!-- 空状态 -->
@@ -149,6 +153,7 @@
     >
       <uni-collapse>
         <uni-collapse-item
+          :key="selectedYearMonth"
           :title="`${displayYearMonth}员工工作时长统计`"
           :open="false"
           :border="false"
@@ -400,15 +405,32 @@ const handleMonthChange = (e) => {
   loadAttendanceRecords();
 };
 
-// 方法：处理日期点击
-const handleDayClick = (day) => {
-  if (!day.hasAttendance) return;
-  selectedDate.value = day.date;
+// 方法：加载指定日期的工作数据
+const loadDateAttendanceData = async (dateStr) => {
+  if (!dateStr) return;
+
+  const date = new Date(dateStr);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+
+  // 如果点击的日期不在当前已加载的月份，需要切换月份并重新加载
+  if (year !== selectedYear.value || month !== selectedMonth.value) {
+    selectedYear.value = year;
+    selectedMonth.value = month;
+    await loadAttendanceRecords();
+  } else {
+    // 如果日期在当前月份，也重新加载一次以确保数据是最新的
+    await loadAttendanceRecords();
+  }
+
+  // 设置选中日期
+  selectedDate.value = dateStr;
+
   // 滚动到该日期
   setTimeout(() => {
     uni
       .createSelectorQuery()
-      .select(`.date-group[data-date="${day.date}"]`)
+      .select(`.date-group[data-date="${dateStr}"]`)
       .boundingClientRect((rect) => {
         if (rect) {
           uni.pageScrollTo({
@@ -418,7 +440,12 @@ const handleDayClick = (day) => {
         }
       })
       .exec();
-  }, 100);
+  }, 200);
+};
+
+// 方法：处理日期点击
+const handleDayClick = async (day) => {
+  await loadDateAttendanceData(day.date);
 };
 
 // 方法：格式化分组日期

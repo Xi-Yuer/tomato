@@ -15,10 +15,10 @@
 
       <view class="form-section">
         <view class="input-group">
-          <text class="input-label">手机号</text>
+          <text class="input-label">账号</text>
           <uni-easyinput
             v-model="formData.phone"
-            placeholder="请输入手机号"
+            placeholder="请输入账号"
             :clearable="true"
             :maxlength="11"
             type="number"
@@ -70,7 +70,7 @@ const handleLogin = async () => {
   // 表单验证
   if (!formData.value.phone) {
     uni.showToast({
-      title: "请输入手机号",
+      title: "请输入账号",
       icon: "none",
     });
     return;
@@ -84,7 +84,7 @@ const handleLogin = async () => {
   }
   if (formData.value.phone.length !== 11) {
     uni.showToast({
-      title: "手机号格式不正确",
+      title: "账号格式不正确",
       icon: "none",
     });
     return;

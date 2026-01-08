@@ -15,6 +15,7 @@ import {
 import { ClockInDto } from './dto/clock-in.dto';
 import { ClockOutDto } from './dto/clock-out.dto';
 import { QueryAttendanceDto } from './dto/query-attendance.dto';
+import { QueryAttendanceByDateDto } from './dto/query-attendance-by-date.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AdminGuard } from '../auth/admin.guard';
 import { JwtPayload } from '../auth/interfaces/jwt-payload.interface';
@@ -106,5 +107,37 @@ export class AttendancesController {
     @Query() queryDto: QueryAttendanceDto,
   ): Promise<AdminDailyAttendanceRecord[]> {
     return this.attendancesService.getAllAttendanceRecords(queryDto);
+  }
+
+  /**
+   * 查询当前员工指定日期的打卡记录
+   * @param req 请求对象（包含当前登录用户信息）
+   * @param queryDto 查询DTO（日期）
+   * @returns 指定日期的打卡记录
+   * @description 员工可以查看指定日期的打卡情况
+   */
+  @Get('my/by-date')
+  getMyAttendanceRecordsByDate(
+    @Request() req: { user: JwtPayload },
+    @Query() queryDto: QueryAttendanceByDateDto,
+  ): Promise<DailyAttendanceRecord | null> {
+    return this.attendancesService.getMyAttendanceRecordsByDate(
+      req.user.userId,
+      queryDto,
+    );
+  }
+
+  /**
+   * 管理员查询指定日期的所有员工打卡记录
+   * @param queryDto 查询DTO（日期）
+   * @returns 指定日期的所有员工打卡记录
+   * @description 管理员可以查看指定日期的所有员工打卡情况
+   */
+  @Get('by-date')
+  @UseGuards(AdminGuard)
+  getAllAttendanceRecordsByDate(
+    @Query() queryDto: QueryAttendanceByDateDto,
+  ): Promise<AdminDailyAttendanceRecord[]> {
+    return this.attendancesService.getAllAttendanceRecordsByDate(queryDto);
   }
 }

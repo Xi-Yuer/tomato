@@ -399,4 +399,14 @@ export const attendanceApi = {
     }
     return api.get("/attendances", params);
   },
+
+  // 查询当前员工指定日期的打卡记录
+  getMyAttendanceRecordsByDate(date) {
+    return api.get("/attendances/my/by-date", { date });
+  },
+
+  // 管理员查询指定日期的所有员工打卡记录
+  getAllAttendanceRecordsByDate(date) {
+    return api.get("/attendances/by-date", { date });
+  },
 };

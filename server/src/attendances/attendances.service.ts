@@ -6,6 +6,7 @@ import { WorkSession } from '../entities/work-session.entity';
 import { ClockInDto } from './dto/clock-in.dto';
 import { ClockOutDto } from './dto/clock-out.dto';
 import { QueryAttendanceDto } from './dto/query-attendance.dto';
+import { QueryAttendanceByDateDto } from './dto/query-attendance-by-date.dto';
 
 export interface WorkSessionItem {
   id: number;
@@ -505,5 +506,123 @@ export class AttendancesService {
       }
       return a.date.localeCompare(b.date);
     });
+  }
+
+  /**
+   * 查询员工指定日期的打卡记录
+   * @param userId 用户ID
+   * @param queryDto 查询DTO（日期）
+   * @returns 指定日期的打卡记录
+   */
+  async getMyAttendanceRecordsByDate(
+    userId: number,
+    queryDto: QueryAttendanceByDateDto,
+  ): Promise<DailyAttendanceRecord | null> {
+    // 解析日期
+    const targetDate = new Date(queryDto.date);
+    const startDate = new Date(targetDate);
+    startDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(targetDate);
+    endDate.setHours(23, 59, 59, 999);
+
+    // 查询该日期所有完成的工作班次
+    const workSessions = await this.workSessionRepository.find({
+      where: {
+        userId,
+        workDate: Between(startDate, endDate),
+        endTime: Not(IsNull()), // 只查询已完成的班次
+      },
+      relations: ['clockIn', 'clockOut'],
+      order: {
+        startTime: 'ASC',
+      },
+    });
+
+    // 如果没有记录，返回null
+    if (workSessions.length === 0) {
+      return null;
+    }
+
+    // 汇总该日期的记录
+    const dateKey = targetDate.toISOString().split('T')[0];
+    const dailyRecord: DailyAttendanceRecord = {
+      date: dateKey,
+      sessions: [],
+      totalDuration: 0,
+    };
+
+    for (const session of workSessions) {
+      dailyRecord.sessions.push({
+        id: session.id,
+        startTime: session.startTime,
+        endTime: session.endTime,
+        duration: session.duration,
+      });
+      dailyRecord.totalDuration += session.duration || 0;
+    }
+
+    return dailyRecord;
+  }
+
+  /**
+   * 管理员查询指定日期的所有员工打卡记录
+   * @param queryDto 查询DTO（日期）
+   * @returns 指定日期的所有员工打卡记录
+   */
+  async getAllAttendanceRecordsByDate(
+    queryDto: QueryAttendanceByDateDto,
+  ): Promise<AdminDailyAttendanceRecord[]> {
+    // 解析日期
+    const targetDate = new Date(queryDto.date);
+    const startDate = new Date(targetDate);
+    startDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(targetDate);
+    endDate.setHours(23, 59, 59, 999);
+
+    // 查询该日期所有完成的工作班次
+    const workSessions = await this.workSessionRepository.find({
+      where: {
+        workDate: Between(startDate, endDate),
+        endTime: Not(IsNull()), // 只查询已完成的班次
+      },
+      relations: ['user', 'clockIn', 'clockOut'],
+      order: {
+        userId: 'ASC',
+        startTime: 'ASC',
+      },
+    });
+
+    // 按用户汇总
+    const userRecords = new Map<number, AdminDailyAttendanceRecord>();
+    const dateKey = targetDate.toISOString().split('T')[0];
+
+    for (const session of workSessions) {
+      const userId = session.userId;
+
+      if (!userRecords.has(userId)) {
+        userRecords.set(userId, {
+          userId,
+          userName: session.user.name,
+          userAvatar: session.user.avatar || null,
+          date: dateKey,
+          sessions: [],
+          totalDuration: 0,
+        });
+      }
+
+      const dailyRecord = userRecords.get(userId);
+      if (dailyRecord) {
+        dailyRecord.sessions.push({
+          id: session.id,
+          startTime: session.startTime,
+          endTime: session.endTime,
+          duration: session.duration,
+        });
+        dailyRecord.totalDuration += session.duration || 0;
+      }
+    }
+
+    // 转换为数组并按用户ID排序
+    return Array.from(userRecords.values()).sort((a, b) => a.userId - b.userId);
   }
 }

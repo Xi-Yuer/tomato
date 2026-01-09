@@ -6,6 +6,8 @@ import { TasksModule } from './tasks/tasks.module';
 import { TaskModulesModule } from './task-modules/task-modules.module';
 import { TaskExecutionsModule } from './task-executions/task-executions.module';
 import { AttendancesModule } from './attendances/attendances.module';
+import { ProcurementCategoriesModule } from './procurement-categories/procurement-categories.module';
+import { ProcurementsModule } from './procurements/procurements.module';
 import { CommonModule } from './common/common.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { User } from './entities/user.entity';
@@ -15,6 +17,8 @@ import { TaskExecution } from './entities/task-execution.entity';
 import { TaskStatusLog } from './entities/task-status-log.entity';
 import { Attendance } from './entities/attendance.entity';
 import { WorkSession } from './entities/work-session.entity';
+import { ProcurementCategory } from './entities/procurement-category.entity';
+import { Procurement } from './entities/procurement.entity';
 
 @Module({
   imports: [
@@ -33,6 +37,8 @@ import { WorkSession } from './entities/work-session.entity';
         TaskStatusLog,
         Attendance,
         WorkSession,
+        ProcurementCategory,
+        Procurement,
       ],
       synchronize: process.env.NODE_ENV !== 'production', // 生产环境应设为false
       logging: process.env.NODE_ENV === 'development',
@@ -49,6 +55,8 @@ import { WorkSession } from './entities/work-session.entity';
     TaskModulesModule,
     TaskExecutionsModule,
     AttendancesModule,
+    ProcurementCategoriesModule,
+    ProcurementsModule,
   ],
   controllers: [],
   providers: [],

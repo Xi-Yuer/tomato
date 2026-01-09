@@ -64,6 +64,20 @@
 
         <uni-list-item
           v-if="userInfo?.isAdmin"
+          title="采购分类管理"
+          :clickable="true"
+          :show-arrow="true"
+          @click="handleProcurementCategoryManagement"
+        >
+          <template v-slot:header>
+            <view class="list-item-icon">
+              <uni-icons type="shop" size="20" color="#000000"></uni-icons>
+            </view>
+          </template>
+        </uni-list-item>
+
+        <uni-list-item
+          v-if="userInfo?.isAdmin"
           title="添加用户"
           :clickable="true"
           :show-arrow="true"
@@ -154,6 +168,13 @@ const handleTaskManagement = () => {
   });
 };
 
+// 采购分类管理
+const handleProcurementCategoryManagement = () => {
+  uni.navigateTo({
+    url: "/pages/procurement/category-management",
+  });
+};
+
 // 添加用户
 const handleAddUser = () => {
   uni.navigateTo({
@@ -165,7 +186,7 @@ const handleAddUser = () => {
 const handleAbout = () => {
   uni.showModal({
     title: "关于",
-    content: "凯德溜冰土豆\nKade Ice Cream Tomato\n版本 1.0.0",
+    content: "凯德溜冰土豆 \nKade Ice Cream Potato",
     showCancel: false,
     confirmText: "确定",
   });
@@ -211,7 +232,7 @@ onShow(() => {
 onTabItemTap((e) => {
   const currentTime = Date.now();
   const currentTabIndex = e.index;
-  
+
   // 判断是否为双击（同一tab，间隔小于500ms）
   if (
     lastTabIndex.value === currentTabIndex &&
@@ -225,7 +246,7 @@ onTabItemTap((e) => {
     });
     getUserInfo();
   }
-  
+
   // 更新记录
   lastTabTapTime.value = currentTime;
   lastTabIndex.value = currentTabIndex;

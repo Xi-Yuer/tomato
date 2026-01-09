@@ -22,7 +22,7 @@
         </text>
 
         <!-- 位置信息 -->
-        <view class="location-info">
+        <view class="location-info" @click="handleLocation">
           <uni-icons
             type="location"
             size="14"
@@ -177,6 +177,13 @@ const getCurrentLocation = () => {
         reject(err);
       },
     });
+  });
+};
+
+const handleLocation = () => {
+  uni.openLocation({
+    latitude: currentLocation.value.latitude,
+    longitude: currentLocation.value.longitude,
   });
 };
 
@@ -371,6 +378,7 @@ onMounted(() => {
 
 .location-icon {
   margin-right: 4px;
+  margin-top: -6rpx;
   transform-origin: center center;
 }
 

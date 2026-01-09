@@ -217,7 +217,7 @@ const handleContact = () => {
 .login-btn {
   width: 100%;
   height: 88rpx;
-  background-color: #1f2937;
+  background-color: #000000;
   border-radius: 8rpx;
   color: #ffffff;
   font-size: 30rpx;

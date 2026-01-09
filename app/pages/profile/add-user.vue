@@ -26,7 +26,7 @@
         <uni-forms-item label="密码" name="password">
           <uni-easyinput
             v-model="formData.password"
-            placeholder="请输入密码（6-100位）"
+            placeholder="请输入密码（6以上位）"
             :clearable="true"
             :maxlength="100"
             type="password"
@@ -259,11 +259,6 @@ const handleCreate = async () => {
   background-color: #fafafa;
 }
 
-.form-section {
-  padding: 0;
-  margin-top: 0;
-}
-
 /* 表单样式 - 扁平化 */
 :deep(.uni-forms) {
   background-color: #ffffff;
@@ -288,13 +283,9 @@ const handleCreate = async () => {
 }
 
 .picker-text {
-  font-size: 28rpx;
-  color: #111827;
+  font-size: 24rpx;
+  color: #9d9d9d;
   flex: 1;
-}
-
-.picker-text.placeholder {
-  color: #9ca3af;
 }
 
 /* 开关样式 */

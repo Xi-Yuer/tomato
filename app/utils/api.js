@@ -1,7 +1,7 @@
 import { storage } from "./storage.js";
 
 // export const BASE_URL = "https://typing.xiyuer.club/potato"; // 正式
-export const BASE_URL = "http://192.168.30.162:8888"; // 测试
+export const BASE_URL = "http://localhost:8888"; // 测试
 
 // 请求拦截器 - 添加token
 const requestInterceptor = (options) => {
@@ -413,5 +413,113 @@ export const attendanceApi = {
   // 管理员查询指定日期的所有员工打卡记录
   getAllAttendanceRecordsByDate(date) {
     return api.get("/attendances/by-date", { date });
+  },
+};
+
+// 采购分类相关API
+export const procurementCategoryApi = {
+  // 获取所有采购分类
+  getCategories() {
+    return api.get("/procurement-categories");
+  },
+  // 获取单个分类详情
+  getCategory(id) {
+    return api.get(`/procurement-categories/${id}`);
+  },
+  // 创建采购分类
+  createCategory(data) {
+    return api.post("/procurement-categories", data);
+  },
+  // 更新采购分类
+  updateCategory(id, data) {
+    return api.patch(`/procurement-categories/${id}`, data);
+  },
+  // 删除采购分类
+  deleteCategory(id) {
+    return api.delete(`/procurement-categories/${id}`);
+  },
+};
+
+// 采购记录相关API
+export const procurementApi = {
+  // 获取所有采购记录
+  getProcurements() {
+    return api.get("/procurements");
+  },
+  // 获取单个采购记录详情
+  getProcurement(id) {
+    return api.get(`/procurements/${id}`);
+  },
+  // 创建采购记录
+  createProcurement(data) {
+    return api.post("/procurements", data);
+  },
+  // 更新采购记录
+  updateProcurement(id, data) {
+    return api.patch(`/procurements/${id}`, data);
+  },
+  // 删除采购记录
+  deleteProcurement(id) {
+    return api.delete(`/procurements/${id}`);
+  },
+  // 按月度查询采购记录
+  getProcurementsByMonth(year, month, categoryId) {
+    const data = { year, month };
+    if (categoryId) {
+      data.categoryId = categoryId;
+    }
+    return api.post("/procurements/by-month", data);
+  },
+  // 按月度统计
+  getStatistics(year, month) {
+    return api.post("/procurements/statistics", { year, month });
+  },
+  // 上传付款截图
+  uploadScreenshot(filePath) {
+    return new Promise((resolve, reject) => {
+      uni.uploadFile({
+        url: `${BASE_URL}/procurements/upload`,
+        filePath: filePath,
+        name: "file",
+        header: {
+          Authorization: `Bearer ${storage.getToken()}`,
+        },
+        success: (res) => {
+          try {
+            const data = JSON.parse(res.data);
+            if (res.statusCode === 200 || res.statusCode === 201) {
+              // 统一响应格式处理
+              if (data.code === 200 && data.data) {
+                resolve(data.data.url || data.data);
+              } else if (data.url) {
+                resolve(data.url);
+              } else {
+                reject(new Error(data.message || "上传失败"));
+              }
+            } else {
+              const errorMsg = data?.message || "上传失败";
+              uni.showToast({
+                title: errorMsg,
+                icon: "none",
+              });
+              reject(new Error(errorMsg));
+            }
+          } catch (error) {
+            reject(error);
+          }
+        },
+        fail: (error) => {
+          let errorMsg = "上传失败";
+          if (error.errMsg) {
+            errorMsg = error.errMsg;
+          }
+          uni.showToast({
+            title: errorMsg,
+            icon: "none",
+          });
+          reject(error);
+        },
+      });
+    });
   },
 };

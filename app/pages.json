@@ -22,7 +22,7 @@
     {
       "path": "pages/dashboard/dashboard",
       "style": {
-        "navigationBarTitleText": "报表"
+        "navigationBarTitleText": "采购记录"
       }
     },
     {
@@ -72,6 +72,18 @@
       "style": {
         "navigationBarTitleText": "提交任务"
       }
+    },
+    {
+      "path": "pages/procurement/category-management",
+      "style": {
+        "navigationBarTitleText": "采购分类管理"
+      }
+    },
+    {
+      "path": "pages/procurement/category-edit",
+      "style": {
+        "navigationBarTitleText": "采购分类"
+      }
     }
   ],
   "tabBar": {
@@ -90,7 +102,7 @@
       },
       {
         "pagePath": "pages/dashboard/dashboard",
-        "text": "报表",
+        "text": "采购记录",
         "iconPath": "static/tabBar/shujukanban.png",
         "selectedIconPath": "static/tabBar/shujukanban-s.png"
       },

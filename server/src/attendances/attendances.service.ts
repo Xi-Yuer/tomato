@@ -283,9 +283,9 @@ export class AttendancesService {
     let isInRange: boolean | undefined;
     if (latitude !== undefined && longitude !== undefined) {
       const centerLat =
-        parseFloat(process.env.ATTENDANCE_CENTER_LAT || '') || 39.9042;
+        parseFloat(process.env.ATTENDANCE_CENTER_LAT || '') || 30.65089;
       const centerLon =
-        parseFloat(process.env.ATTENDANCE_CENTER_LON || '') || 116.4074;
+        parseFloat(process.env.ATTENDANCE_CENTER_LON || '') || 104.07;
       const allowedRadius =
         parseFloat(process.env.ATTENDANCE_ALLOWED_RADIUS || '') || 100;
       distance = Math.round(

@@ -23,13 +23,13 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<Omit<User, 'password'>> {
-    // 检查手机号是否已存在
+    // 检查账号是否已存在
     const existingUser = await this.usersRepository.findOne({
       where: { phone: createUserDto.phone },
     });
 
     if (existingUser) {
-      throw new ConflictException('该手机号已被使用');
+      throw new ConflictException('该账号已被使用');
     }
 
     // 加密密码
@@ -121,7 +121,7 @@ export class UsersService {
     const user = await this.findByPhone(loginDto.phone);
 
     if (!user) {
-      throw new UnauthorizedException('手机号或密码错误');
+      throw new UnauthorizedException('账号或密码错误');
     }
 
     const isPasswordValid = await bcrypt.compare(
@@ -130,7 +130,7 @@ export class UsersService {
     );
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException('手机号或密码错误');
+      throw new UnauthorizedException('账号或密码错误');
     }
 
     const payload = { sub: user.id, phone: user.phone };

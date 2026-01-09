@@ -12,10 +12,10 @@
           ></uni-easyinput>
         </uni-forms-item>
 
-        <uni-forms-item label="手机号" name="phone">
+        <uni-forms-item label="账号" name="phone">
           <uni-easyinput
             v-model="formData.phone"
-            placeholder="请输入11位手机号"
+            placeholder="请输入账号"
             :clearable="true"
             :maxlength="11"
             type="number"
@@ -125,11 +125,11 @@ const rules = {
     rules: [
       {
         required: true,
-        errorMessage: "请输入手机号",
+        errorMessage: "请输入账号",
       },
       {
         pattern: /^1[3-9]\d{9}$/,
-        errorMessage: "请输入正确的11位手机号",
+        errorMessage: "请输入正确的账号",
       },
     ],
   },

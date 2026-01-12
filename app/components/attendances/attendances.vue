@@ -104,6 +104,7 @@ const getCurrentLocation = () => {
               uni.getLocation({
                 type: "gcj02",
                 geocode: false,
+                isHighAccuracy: true, // 请求高精度定位，适用于需要精确位置的场景
                 success: (res) => {
                   currentLocation.value = {
                     latitude: res.latitude,
@@ -184,6 +185,8 @@ const handleLocation = () => {
   uni.openLocation({
     latitude: currentLocation.value.latitude,
     longitude: currentLocation.value.longitude,
+    name: "打卡中心",
+    address: "凯德广场溜冰土豆小屋",
   });
 };
 

@@ -102,11 +102,17 @@ export class AttendancesService {
     const isValid = isPointWithinRadius(point, center, allowedRadius);
 
     // 计算距离用于返回信息（无论是否在范围内都需要显示距离）
+    this.logger.log(
+      `位置验证 - 用户位置: (${latitude}, ${longitude}), 中心位置: (${centerLat}, ${centerLon})`,
+    );
     const distance = this.calculateDistance(
       latitude,
       longitude,
       centerLat,
       centerLon,
+    );
+    this.logger.log(
+      `计算距离: ${Math.round(distance)} 米, 允许范围: ${allowedRadius} 米, 是否在范围内: ${isValid}`,
     );
     if (!isValid) {
       return {

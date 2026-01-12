@@ -423,6 +423,14 @@ const calculatedTotal = computed(() => {
 });
 
 const totalAmount = computed(() => {
+  // 如果有筛选条件，根据筛选后的采购记录计算总价
+  if (selectedCategoryId.value) {
+    return procurements.value.reduce(
+      (sum, item) => sum + (parseFloat(item.totalPrice) || 0),
+      0
+    );
+  }
+  // 没有筛选条件时，使用统计数据
   return statistics.value.reduce((sum, stat) => sum + stat.totalAmount, 0);
 });
 
@@ -1109,7 +1117,7 @@ onTabItemTap((e) => {
 :deep(.uni-forms-item__label) {
   font-size: 28rpx;
   color: #333;
-  width: 160rpx;
+  width: 200rpx !important;
 }
 
 .picker-view {
@@ -1227,7 +1235,7 @@ onTabItemTap((e) => {
 .filter-popup {
   background-color: #ffffff;
   border-radius: 24rpx 24rpx 0 0;
-  height: 60vh;
+  height: 65vh;
   display: flex;
   flex-direction: column;
 }
